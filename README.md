@@ -61,6 +61,19 @@ The PC must be on with the dashboard running. Also new: change vs the period bef
 Creator Rewards progress per TikTok account, a details sheet with a growth curve for every post, CSV export,
 and a weekly Telegram summary on Monday morning (switch in Settings).
 
+## Online version (no PC needed)
+
+GitHub updates the numbers every 15 minutes (`.github/workflows/cloud.yml`): it syncs from Zernio, encrypts
+everything with your password (AES-256) and publishes the app on GitHub Pages. The page computes the numbers
+itself (`static/stats.js`, checked against `app/stats.py`). Only your password opens them.
+
+- Secrets on GitHub: `HUB_ENV` (the .env content), `HUB_CONFIG` (channels + Telegram chat, `python tools/cloud.py setup`),
+  `HUB_PASSWORD`, `HUB_REFRESH_TOKEN` (fine-grained token, Actions read/write on this repository only, for the Update button).
+- The encrypted database lives on the `state` branch (one commit, replaced at each run).
+- Telegram alerts and the weekly summary are sent by GitHub; the PC stays quiet (`telegram_by_cloud` in settings.json).
+- To add a channel online: add its line to `HUB_ENV`, and the channel to `HUB_CONFIG`.
+- Phone (Android): open the address in Chrome, type the password once, menu -> Install app.
+
 ## Your keys
 
 All keys stay in the `.env` file of this folder (one line per channel + the Telegram bot token). Updates of the
