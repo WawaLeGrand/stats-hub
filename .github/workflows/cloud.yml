@@ -5,7 +5,7 @@
 name: Stats Hub online
 
 on:
-  schedule:
+  schedule:  # GitHub may start a few minutes late, and waits a while before the first one on a new repository
     - cron: "*/15 * * * *"
   workflow_dispatch:
 
