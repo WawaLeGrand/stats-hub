@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stats Hub</title>
+<meta name="description" content="Your TikTok and Instagram accounts in one place.">
+<meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1b1e" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stats Hub">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="static/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="static/icons/apple-touch-icon.png">
+<script>
+  try { const t = localStorage.getItem("hub-theme"); if (t) document.documentElement.dataset.theme = t; } catch {}
+  // the browser offers "Install app" early: keep the offer for the Settings page
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); window.__install = e; });
+  if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+</script>
+<link rel="stylesheet" href="static/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="ptr" id="ptr" aria-hidden="true"><span class="ptr-spinner"></span></div>
+
+<header class="top">
+  <a class="brand" href="#/">
+    <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1.5"/><rect x="10" y="7" width="4" height="14" rx="1.5"/><rect x="17" y="3" width="4" height="18" rx="1.5"/></svg></span>
+    Stats Hub
+  </a>
+  <nav class="tabs">
+    <a href="#/" data-tab="overview" data-i18n="nav.overview">Overview</a>
+    <a href="#/posts" data-tab="posts" data-i18n="nav.posts">Top posts</a>
+    <a href="#/insights" data-tab="insights" data-i18n="nav.insights">Insights</a>
+    <a href="#/settings" data-tab="settings" data-i18n="nav.settings">Settings</a>
+  </nav>
+  <div class="top-right">
+    <span class="sync"><span id="sync"></span>
+      <button class="link-btn" id="sync-now" hidden aria-label="Sync now"><span class="only-desktop" data-i18n="sync.now">Sync now</span><svg class="only-phone" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button></span>
+    <select id="lang" class="lang" aria-label="Language">
+      <option value="en">EN</option>
+      <option value="fr">FR</option>
+    </select>
+  </div>
+</header>
+
+<div class="banner" id="demo-banner" hidden data-i18n-html="demo.banner"></div>
+<div class="banner warn" id="sync-errors" hidden></div>
+<div class="banner offline" id="offline" hidden></div>
+
+<div class="filters">
+  <div class="seg" id="f-days" role="group">
+    <button data-v="7"></button><button data-v="30"></button><button data-v="90"></button>
+  </div>
+  <div class="seg" id="f-platform" role="group">
+    <button data-v="all" data-i18n="filter.all">All</button>
+    <button data-v="tiktok"><span class="pi tiktok" aria-hidden="true"></span>TikTok</button>
+    <button data-v="instagram"><span class="pi instagram" aria-hidden="true"></span>Instagram</button>
+  </div>
+  <select id="f-group"></select>
+</div>
+
+<main id="view"></main>
+
+<nav class="bottom-nav" id="bottom-nav">
+  <a href="#/" data-tab="overview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg><span data-i18n="nav.short.overview">Home</span></a>
+  <a href="#/posts" data-tab="posts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 14V8l6 4-6 4z"/></svg><span data-i18n="nav.short.posts">Posts</span></a>
+  <a href="#/insights" data-tab="insights"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 7-7v4h2V5h-7v2h4l-6 6-4-4-7 7z"/></svg><span data-i18n="nav.short.insights">Insights</span></a>
+  <a href="#/settings" data-tab="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.9 7.9 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a8 8 0 0 0-1.7-1L15 3H9l-.4 2.9a8 8 0 0 0-1.7 1l-2.5-1-2 3.5L4.6 11a7.9 7.9 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a8 8 0 0 0 1.7 1L9 21h6l.4-2.9a8 8 0 0 0 1.7-1l2.5 1 2-3.5L19.4 13zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg><span data-i18n="nav.short.settings">Settings</span></a>
+</nav>
+
+<div class="sheet-backdrop" id="sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true">
+    <button class="sheet-close" id="sheet-close" aria-label="Close">×</button>
+    <div id="sheet-body"></div>
+  </div>
+</div>
+
+<div class="tip" id="tip" hidden></div>
+<script src="cloud-config.js"></script>
+<script src="static/stats.js"></script>
+<script src="static/app.js"></script>
+</body>
+</html>

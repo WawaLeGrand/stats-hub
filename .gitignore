@@ -1,0 +1,11 @@
+.env
+.venv/
+data/
+__pycache__/
+settings.json
+cloud-setup/
+channels.json
+tools/audit.py
+site/
+state/
+repos/

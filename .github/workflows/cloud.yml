@@ -1,0 +1,88 @@
+# Stats Hub, online version: every 15 minutes (or from the app's Refresh button), sync from Zernio,
+# encrypt the numbers with your password and publish the app on GitHub Pages.
+# Secrets used (Settings -> Secrets and variables -> Actions): HUB_ENV, HUB_CONFIG, HUB_PASSWORD, HUB_REFRESH_TOKEN.
+# The logs of this public repository are public: no step prints a name, a number or a key.
+name: Stats Hub online
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # save the encrypted database on the "state" branch
+  pages: write      # publish the app
+  id-token: write   # required by GitHub Pages
+
+concurrency:
+  group: stats-hub
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Install
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install --quiet -r requirements-cloud.txt
+
+      - name: Restore the saved database
+        env:
+          HUB_PASSWORD: ${{ secrets.HUB_PASSWORD }}
+        run: |
+          mkdir -p data
+          if git fetch --quiet --depth 1 origin state 2>/dev/null; then
+            git show FETCH_HEAD:hub.db.enc > "$RUNNER_TEMP/hub.db.enc"
+            node tools/crypto.mjs decrypt "$RUNNER_TEMP/hub.db.enc" data/hub.db
+            echo "database restored"
+          else
+            echo "first run: new database"
+          fi
+
+      - name: Sync
+        env:
+          HUB_ENV: ${{ secrets.HUB_ENV }}
+          HUB_CONFIG: ${{ secrets.HUB_CONFIG }}
+        run: |
+          .venv/bin/python tools/cloud.py prepare
+          .venv/bin/python tools/cloud.py sync
+
+      - name: Build the app
+        env:
+          HUB_PASSWORD: ${{ secrets.HUB_PASSWORD }}
+          HUB_REFRESH_TOKEN: ${{ secrets.HUB_REFRESH_TOKEN }}
+        run: |
+          .venv/bin/python tools/cloud.py bundle "$RUNNER_TEMP/bundle.json"
+          .venv/bin/python tools/cloud.py site site
+          node tools/crypto.mjs encrypt "$RUNNER_TEMP/bundle.json" site/data.enc
+          rm -f "$RUNNER_TEMP/bundle.json"
+          node tools/crypto.mjs encrypt data/hub.db "$RUNNER_TEMP/hub.db.enc"
+
+      - name: Save the database (encrypted, "state" branch, one commit)
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          mkdir "$RUNNER_TEMP/state" && cd "$RUNNER_TEMP/state"
+          cp "$RUNNER_TEMP/hub.db.enc" hub.db.enc
+          git init --quiet -b state
+          git add hub.db.enc
+          git -c user.name=stats-hub -c user.email=stats-hub@users.noreply.github.com commit --quiet -m "encrypted database"
+          git push --quiet --force "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" state
+
+      - name: Remove the working files
+        if: always()
+        run: rm -f .env settings.json channels.json data/hub.db && rm -rf repos
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9  # v5.0.0
+        with:
+          path: site
+
+      - id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346  # v5.0.1
