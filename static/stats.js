@@ -42,7 +42,10 @@
   const cmp = (a, b) => (a == null ? (b == null ? 0 : -1) : b == null ? 1 : a < b ? -1 : a > b ? 1 : 0);  // NULL first, like SQL
 
   function create(bundle, nowWhen) {
-    const today = paris(nowWhen || Date.now()).date;
+    const nowMs = nowWhen ? new Date(nowWhen).getTime() : Date.now();
+    const today = paris(nowMs).date;
+    const HOUR = 36e5;
+    const toSecond = ms => Math.floor(ms / 1000) * 1000;  // like Python's isoformat(timespec="seconds")
     const accounts = [...bundle.accounts].sort((a, b) =>
       cmp(a.group_name, b.group_name) || cmp(a.platform, b.platform) || cmp(a.handle, b.handle));
     const hist = {};
@@ -74,7 +77,14 @@
 
     function scope(days, platform, group, accountId) {
       const accs = pick(platform, group, accountId), ids = new Set(accs.map(a => a.id));
-      const firstDay = addDays(today, -(days - 1)), previousFirst = addDays(firstDay, -days);
+      const firstDay = addDays(today, -(days - 1));
+      if (days === 1) {  // the last 24 hours, rolling (not "since midnight"), against the 24 hours before
+        const from = toSecond(nowMs - 48 * HOUR), cut = toSecond(nowMs - 24 * HOUR);
+        const all = posts.filter(p => ids.has(p.account_id) && Date.parse(p.published_at) >= from);
+        return { firstDay, accs, inRange: all.filter(p => Date.parse(p.published_at) >= cut),
+          previous: all.filter(p => Date.parse(p.published_at) < cut) };
+      }
+      const previousFirst = addDays(firstDay, -days);
       const all = posts.filter(p => ids.has(p.account_id) && p.local.date >= previousFirst);
       return { firstDay, accs, inRange: all.filter(p => p.local.date >= firstDay), previous: all.filter(p => p.local.date < firstDay) };
     }
@@ -97,7 +107,20 @@
       return k;
     }
 
-    function series(accs, ps, firstDay) {
+    function series(accs, ps, firstDay, days) {
+      if (days === 1) {  // hour by hour, from the hour of 24 h ago to the current hour
+        const start = Math.floor((toSecond(nowMs) - 24 * HOUR) / HOUR) * HOUR;
+        const hours = Array.from({ length: 25 }, (_, i) => start + i * HOUR);
+        const label = when => { const x = paris(when); return `${x.date}T${String(x.hour).padStart(2, "0")}`; };
+        const views = new Map();
+        for (const p of ps) {
+          const k = `${p.local.date}T${String(p.local.hour).padStart(2, "0")}`;
+          views.set(k, (views.get(k) || 0) + (p.views || 0));
+        }
+        const labels = hours.map(label);
+        return { labels, followers: hours.map(h => sum(accs, a => valueOn(hist[a.id], paris(h).date) || 0)),
+          views: labels.map(l => views.get(l) || 0) };
+      }
       const dayList = [];
       for (let d = firstDay; d <= today; d = addDays(d, 1)) dayList.push(d);
       const views = new Map();
@@ -153,9 +176,9 @@
         for (const name of PLATFORM_ORDER.filter(n => s.accs.some(a => a.platform === n))) {
           const accs = s.accs.filter(a => a.platform === name);
           const ps = accs.flatMap(a => inRange.get(a.id) || []), prev = accs.flatMap(a => before.get(a.id) || []);
-          platforms[name] = { accounts: accs.length, kpis: kpis(accs, ps, days, prev), series: series(accs, ps, s.firstDay) };
+          platforms[name] = { accounts: accs.length, kpis: kpis(accs, ps, days, prev), series: series(accs, ps, s.firstDay, days) };
         }
-        return { kpis: kpis(s.accs, s.inRange, days, s.previous), series: series(s.accs, s.inRange, s.firstDay),
+        return { kpis: kpis(s.accs, s.inRange, days, s.previous), series: series(s.accs, s.inRange, s.firstDay, days),
           platforms, accounts: rows, goals: { targets: bundle.targets, accounts: goals(s.accs) } };
       },
 
@@ -186,7 +209,7 @@
         return {
           account: { id: a.id, platform: a.platform, handle: a.handle, name: a.display_name, group: a.group_name,
             type: a.account_type, source: a.source, growth_7: growth(h, today, 7), growth_30: growth(h, today, 30) },
-          kpis: kpis(s.accs, s.inRange, days, s.previous), series: series(s.accs, s.inRange, s.firstDay),
+          kpis: kpis(s.accs, s.inRange, days, s.previous), series: series(s.accs, s.inRange, s.firstDay, days),
           categories: categories(s.inRange), posts: [...s.inRange].reverse().map(pub),
         };
       },

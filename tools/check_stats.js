@@ -5,8 +5,8 @@ const fs = require("fs");
 const path = require("path");
 const HubStats = require(path.join(__dirname, "..", "static", "stats.js"));
 
-const { bundle, cases, py } = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
-const m = HubStats.create(bundle);
+const { bundle, cases, py, now } = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const m = HubStats.create(bundle, now);  // the same instant as the Python side
 const close = (a, b) => a === b || (typeof a === "number" && typeof b === "number"
   && Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b)));
 

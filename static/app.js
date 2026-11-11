@@ -11,24 +11,26 @@ const I18N = {
     "offline.banner": "<strong>Offline.</strong> These are the numbers saved on {time}. The PC or the dashboard can't be reached right now.",
     "offline.action": "Not possible while offline.",
     "offline.page": "This page hasn't been saved on this device yet. It will show up as soon as the dashboard can be reached.",
-    "filter.all": "All", "filter.days": "{n} days", "filter.groups": "All channels",
+    "filter.all": "All", "filter.days": "{n} days", "filter.24h": "24 h", "period.24h": "24 hours", "period.days": "{n} days", "filter.groups": "All channels",
     "kpi.followers": "Followers", "kpi.views": "Views", "kpi.median": "Median views per post",
     "kpi.engagement": "Engagement rate", "kpi.ppw": "Posts per week",
-    "kpi.growth": "<b>{growth}</b> in {n} days", "kpi.posts": "{posts} posts in {n} days",
+    "kpi.growth": "<b>{growth}</b> in {period}", "kpi.posts": "{posts} posts in {period}",
     "kpi.median.sub": "typical post, ignores viral outliers", "kpi.eng.sub": "(likes + comments + shares) ÷ views",
-    "kpi.ppw.sub": "posting consistency", "kpi.vsPrev": "Compared with the {n} days before",
+    "kpi.ppw.sub": "posting consistency", "kpi.posts24": "Posts published", "kpi.posts24.sub": "in the last 24 hours", "kpi.vsPrev": "Compared with the {period} before",
     "delta.new": "new",
     "pf.accounts": "{n} accounts", "pf.account": "1 account", "pf.followers": "Followers", "pf.views": "Views",
-    "pf.median": "Median views", "pf.eng": "Engagement", "pf.chart": "Views per day",
+    "pf.median": "Median views", "pf.eng": "Engagement", "pf.chart": "Views per day", "pf.chart.hour": "Views per hour",
     "chart.followers": "Followers by platform", "chart.followers.sub": "Total at the end of each day",
     "chart.views": "Views per day", "chart.views.sub": "Views of the posts published each day, by platform",
+    "chart.views.hour": "Views per hour", "chart.views.sub.hour": "Views of the posts published each hour, by platform",
+    "chart.followers.sub.hour": "Total, counted once a day",
     "goals.title": "Creator Rewards (TikTok)",
     "goals.sub": "What TikTok asks before it pays: {followers} followers and {views} views over 30 days, on a personal account, with videos longer than 1 minute.",
     "goals.followers": "Followers", "goals.views30": "Views, last 30 days", "goals.reached": "Numbers reached",
     "goals.estimate": "Views = views of the posts published in the last 30 days. It's an estimate: TikTok also counts new views on older videos.",
     "channels.title": "Channels", "channels.sub": "Each channel and its accounts. Click an account to open it.",
-    "channels.total": "{followers} followers · {views} views in {n} days",
-    "table.title": "All accounts", "table.sub": "Click a column to sort, click an account to open it. Trend = followers over {n} days.",
+    "channels.total": "{followers} followers · {views} views in {period}",
+    "table.title": "All accounts", "table.sub": "Click a column to sort, click an account to open it. Trend = followers over {period}.",
     "rank.sub": "Sorted by:", "rank.growth7": "Growth, 7 days", "rank.growth30": "Growth, 30 days",
     "col.account": "Account", "col.followers": "Followers", "col.7": "7 days", "col.30": "30 days", "col.trend": "Trend",
     "col.ppw": "Posts / week", "col.views": "Views", "col.median": "Median views", "col.eng": "Engagement",
@@ -37,7 +39,7 @@ const I18N = {
     "col.watch.title": "Average watch time (Instagram Reels)", "col.posts": "Posts",
     "pc.views": "views",
     "posts.title": "Top posts", "posts.byViews": "By views", "posts.byShares": "By shares",
-    "posts.sub": "Best {n} posts of the last {d} days. Shares and saves are the strongest signals for the algorithm. Click a post for its details and its growth curve.",
+    "posts.sub": "Best {n} posts of the last {period}. Shares and saves are the strongest signals for the algorithm. Click a post for its details and its growth curve.",
     "posts.none": "No posts in this period.", "posts.open": "Open the post",
     "posts.export": "Export CSV", "posts.allCats": "All categories",
     "post.open": "Open on {platform}", "post.growth": "Views since publication",
@@ -45,7 +47,7 @@ const I18N = {
     "post.reach": "Reach", "post.missing": "Post not found.", "post.loading": "Loading…",
     "sheet.close": "Close",
     "ins.times": "Best days and times to post",
-    "ins.times.sub": "Median views of the posts published in each slot, last {d} days ({n} posts).",
+    "ins.times.sub": "Median views of the posts published in each slot, last {period} ({n} posts).",
     "ins.times.more": " Use 90 days for a more reliable picture.",
     "ins.best": "Best slot: <b>{day} around {hour}</b>, median {views} views ({n} posts).",
     "ins.tip": "{day} {hour} · median {views} views · {n} posts", "ins.tip.none": "{day} {hour} · no posts",
@@ -53,7 +55,7 @@ const I18N = {
     "ins.cats": "Performance by category",
     "ins.cats.sub": "Median views per post for each topic category. Hover or tap a bar for posts, engagement and shares.",
     "ins.nocat": "No category",
-    "acc.back": "← All accounts", "acc.posts": "Posts", "acc.posts.sub": "Every post of the last {d} days, newest first.",
+    "acc.back": "← All accounts", "acc.posts": "Posts", "acc.posts.sub": "Every post of the last {period}, newest first.",
     "acc.type.personal": "personal account", "acc.type.creator": "creator account", "acc.type.business": "business account",
     "acc.missing": "Account not found.", "acc.toOverview": "Back to the overview",
     "set.look": "Appearance", "set.look.sub": "Saved on this device.",
@@ -144,24 +146,26 @@ const I18N = {
     "offline.banner": "<strong>Hors ligne.</strong> Voici les chiffres enregistrés le {time}. Le PC ou le tableau de bord est injoignable pour l'instant.",
     "offline.action": "Impossible hors ligne.",
     "offline.page": "Cette page n'a pas encore été enregistrée sur cet appareil. Elle s'affichera dès que le tableau de bord sera joignable.",
-    "filter.all": "Tout", "filter.days": "{n} jours", "filter.groups": "Toutes les chaînes",
+    "filter.all": "Tout", "filter.days": "{n} jours", "filter.24h": "24 h", "period.24h": "24 heures", "period.days": "{n} jours", "filter.groups": "Toutes les chaînes",
     "kpi.followers": "Abonnés", "kpi.views": "Vues", "kpi.median": "Vues médianes par post",
     "kpi.engagement": "Taux d'engagement", "kpi.ppw": "Posts par semaine",
-    "kpi.growth": "<b>{growth}</b> en {n} jours", "kpi.posts": "{posts} posts en {n} jours",
+    "kpi.growth": "<b>{growth}</b> en {period}", "kpi.posts": "{posts} posts en {period}",
     "kpi.median.sub": "post typique, sans les vidéos virales", "kpi.eng.sub": "(likes + commentaires + partages) ÷ vues",
-    "kpi.ppw.sub": "régularité de publication", "kpi.vsPrev": "Par rapport aux {n} jours précédents",
+    "kpi.ppw.sub": "régularité de publication", "kpi.posts24": "Posts publiés", "kpi.posts24.sub": "ces dernières 24 heures", "kpi.vsPrev": "Par rapport à la période précédente ({period})",
     "delta.new": "nouveau",
     "pf.accounts": "{n} comptes", "pf.account": "1 compte", "pf.followers": "Abonnés", "pf.views": "Vues",
-    "pf.median": "Vues médianes", "pf.eng": "Engagement", "pf.chart": "Vues par jour",
+    "pf.median": "Vues médianes", "pf.eng": "Engagement", "pf.chart": "Vues par jour", "pf.chart.hour": "Vues par heure",
     "chart.followers": "Abonnés par plateforme", "chart.followers.sub": "Total à la fin de chaque jour",
     "chart.views": "Vues par jour", "chart.views.sub": "Vues des posts publiés chaque jour, par plateforme",
+    "chart.views.hour": "Vues par heure", "chart.views.sub.hour": "Vues des posts publiés chaque heure, par plateforme",
+    "chart.followers.sub.hour": "Total, compté une fois par jour",
     "goals.title": "Creator Rewards (TikTok)",
     "goals.sub": "Ce que TikTok demande avant de payer : {followers} abonnés et {views} vues sur 30 jours, avec un compte personnel et des vidéos de plus d'1 minute.",
     "goals.followers": "Abonnés", "goals.views30": "Vues, 30 derniers jours", "goals.reached": "Objectifs atteints",
     "goals.estimate": "Vues = vues des posts publiés ces 30 derniers jours. C'est une estimation : TikTok compte aussi les nouvelles vues des anciennes vidéos.",
     "channels.title": "Chaînes", "channels.sub": "Chaque chaîne et ses comptes. Clique sur un compte pour l'ouvrir.",
-    "channels.total": "{followers} abonnés · {views} vues en {n} jours",
-    "table.title": "Tous les comptes", "table.sub": "Clique sur une colonne pour trier, sur un compte pour l'ouvrir. Tendance = abonnés sur {n} jours.",
+    "channels.total": "{followers} abonnés · {views} vues en {period}",
+    "table.title": "Tous les comptes", "table.sub": "Clique sur une colonne pour trier, sur un compte pour l'ouvrir. Tendance = abonnés sur {period}.",
     "rank.sub": "Trié par :", "rank.growth7": "Croissance, 7 jours", "rank.growth30": "Croissance, 30 jours",
     "col.account": "Compte", "col.followers": "Abonnés", "col.7": "7 jours", "col.30": "30 jours", "col.trend": "Tendance",
     "col.ppw": "Posts / sem.", "col.views": "Vues", "col.median": "Vues médianes", "col.eng": "Engagement",
@@ -170,7 +174,7 @@ const I18N = {
     "col.watch.title": "Durée moyenne de visionnage (Reels Instagram)", "col.posts": "Posts",
     "pc.views": "vues",
     "posts.title": "Meilleurs posts", "posts.byViews": "Par vues", "posts.byShares": "Par partages",
-    "posts.sub": "Les {n} meilleurs posts des {d} derniers jours. Les partages et les enregistrements sont les signaux les plus forts pour l'algorithme. Clique sur un post pour voir son détail et sa courbe.",
+    "posts.sub": "Les {n} meilleurs posts sur {period}. Les partages et les enregistrements sont les signaux les plus forts pour l'algorithme. Clique sur un post pour voir son détail et sa courbe.",
     "posts.none": "Aucun post sur cette période.", "posts.open": "Ouvrir le post",
     "posts.export": "Exporter en CSV", "posts.allCats": "Toutes les catégories",
     "post.open": "Ouvrir sur {platform}", "post.growth": "Vues depuis la publication",
@@ -178,7 +182,7 @@ const I18N = {
     "post.reach": "Portée", "post.missing": "Post introuvable.", "post.loading": "Chargement…",
     "sheet.close": "Fermer",
     "ins.times": "Meilleurs jours et heures pour publier",
-    "ins.times.sub": "Vues médianes des posts publiés sur chaque créneau, {d} derniers jours ({n} posts).",
+    "ins.times.sub": "Vues médianes des posts publiés sur chaque créneau, sur {period} ({n} posts).",
     "ins.times.more": " Choisis 90 jours pour un résultat plus fiable.",
     "ins.best": "Meilleur créneau : <b>{day} vers {hour}</b>, {views} vues médianes ({n} posts).",
     "ins.tip": "{day} {hour} · {views} vues médianes · {n} posts", "ins.tip.none": "{day} {hour} · aucun post",
@@ -186,7 +190,7 @@ const I18N = {
     "ins.cats": "Performance par catégorie",
     "ins.cats.sub": "Vues médianes par post pour chaque catégorie. Survole ou touche une barre pour les posts, l'engagement et les partages.",
     "ins.nocat": "Sans catégorie",
-    "acc.back": "← Tous les comptes", "acc.posts": "Posts", "acc.posts.sub": "Tous les posts des {d} derniers jours, du plus récent au plus ancien.",
+    "acc.back": "← Tous les comptes", "acc.posts": "Posts", "acc.posts.sub": "Tous les posts sur {period}, du plus récent au plus ancien.",
     "acc.type.personal": "compte personnel", "acc.type.creator": "compte créateur", "acc.type.business": "compte professionnel",
     "acc.missing": "Compte introuvable.", "acc.toOverview": "Retour à la vue d'ensemble",
     "set.look": "Apparence", "set.look.sub": "Enregistré sur cet appareil.",
@@ -310,7 +314,13 @@ const signed = n => n == null ? "–" : (n > 0 ? "+" : n < 0 ? "−" : "") + fmt
 const pct = r => r == null ? "–" : new Intl.NumberFormat(numLocale(), { style: "percent", maximumFractionDigits: 1, minimumFractionDigits: 1 }).format(r);
 const trend = n => n == null || n === 0 ? "" : n > 0 ? "up" : "down";
 const PLATFORM = { tiktok: "TikTok", instagram: "Instagram" };
-const shortDate = iso => new Date(iso + "T12:00:00").toLocaleDateString(locale(), { day: "numeric", month: "short" });
+// a chart label: a day ("2026-11-11") or, over the last 24 hours, an hour ("2026-11-11T21")
+const shortDate = iso => new Date(iso.slice(0, 10) + "T12:00:00").toLocaleDateString(locale(), { day: "numeric", month: "short" })
+  + (iso.length > 10 ? `, ${iso.slice(11, 13)}:00` : "");
+const axisLabel = iso => (iso.length > 10 ? `${iso.slice(11, 13)}:00` : shortDate(iso));
+// "30 days" / "24 hours": the period the filters show, for the texts
+const period = () => tText(state.days === 1 ? "period.24h" : "period.days", { n: state.days });
+const hourly = key => (state.days === 1 ? key + ".hour" : key);  // over 24 hours the charts go hour by hour
 const longTime = d => d.toLocaleString(locale(), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 const shortTime = d => d.toDateString() === new Date().toDateString()
   ? d.toLocaleTimeString(locale(), { hour: "2-digit", minute: "2-digit" })
@@ -335,7 +345,7 @@ function change(now, before, kind) {
   const share = new Intl.NumberFormat(numLocale(), { style: "percent", maximumFractionDigits: 0 }).format(Math.abs(r));
   return { text: `${r > 0 ? "▲" : "▼"} ${share}`, dir: r > 0 ? "up" : "down" };
 }
-const pill = (c, n) => c ? `<span class="pill ${c.dir}" title="${t("kpi.vsPrev", { n })}">${esc(c.text)}</span>` : "";
+const pill = c => c ? `<span class="pill ${c.dir}" title="${t("kpi.vsPrev", { period: period() })}">${esc(c.text)}</span>` : "";
 
 const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 const colors = () => ({
@@ -627,7 +637,7 @@ function baseOptions(c, valueLabel) {
     scales: {
       x: {
         grid: { display: false }, border: { color: c.grid },
-        ticks: { color: c.muted, maxTicksLimit: 6, maxRotation: 0, callback(v) { return shortDate(this.getLabelForValue(v)); } },
+        ticks: { color: c.muted, maxTicksLimit: 6, maxRotation: 0, callback(v) { return axisLabel(this.getLabelForValue(v)); } },
       },
       y: {
         grid: { color: c.grid }, border: { display: false },
@@ -770,30 +780,35 @@ const thumb = (p, size = "") => p.thumbnail
   : `<span class="thumb ${size}">${icon(p.platform)}</span>`;
 
 function kpiTiles(k, series) {
-  const n = state.days, prev = k.previous || {};
+  const prev = k.previous || {};
   // every pill says how the big number moved against the N days before; for followers: against N days ago
   const before = k.growth != null ? k.followers - k.growth : null;
+  // the 5th tile: over 24 hours, the posts published (a weekly rate would mean nothing there)
+  const postsTile = state.days === 1
+    ? `<div class="kpi"><div class="label">${t("kpi.posts24")}</div>
+        <div class="value">${num(k.posts)}${pill(change(k.posts, prev.posts))}</div><div class="delta">${t("kpi.posts24.sub")}</div></div>`
+    : `<div class="kpi"><div class="label">${t("kpi.ppw")}</div>
+        <div class="value">${num(k.posts_per_week)}${pill(change(k.posts_per_week, prev.posts_per_week))}</div>
+        <div class="delta">${t("kpi.ppw.sub")}</div></div>`;
   return `<section class="kpis">
     <div class="kpi"><div class="label">${t("kpi.followers")}</div>
-      <div class="value">${fmt(k.followers)}${pill(change(k.followers, before, "stock"), n)}</div>
-      <div class="delta">${t("kpi.growth", { growth: signed(k.growth), n })}</div>${series ? sparkline(series.followers, "#fff", 64, 24) : ""}</div>
+      <div class="value">${fmt(k.followers)}${pill(change(k.followers, before, "stock"))}</div>
+      <div class="delta">${t("kpi.growth", { growth: signed(k.growth), period: period() })}</div>${series ? sparkline(series.followers, "#fff", 64, 24) : ""}</div>
     <div class="kpi"><div class="label">${t("kpi.views")}</div>
-      <div class="value">${fmt(k.views)}${pill(change(k.views, prev.views), n)}</div>
-      <div class="delta">${t("kpi.posts", { posts: k.posts, n })}</div>${series ? sparkline(series.views, "#fff", 64, 24) : ""}</div>
+      <div class="value">${fmt(k.views)}${pill(change(k.views, prev.views))}</div>
+      <div class="delta">${t("kpi.posts", { posts: k.posts, period: period() })}</div>${series ? sparkline(series.views, "#fff", 64, 24) : ""}</div>
     <div class="kpi"><div class="label">${t("kpi.median")}</div>
-      <div class="value">${fmt(k.median_views)}${pill(change(k.median_views, prev.median_views), n)}</div>
+      <div class="value">${fmt(k.median_views)}${pill(change(k.median_views, prev.median_views))}</div>
       <div class="delta">${t("kpi.median.sub")}</div></div>
     <div class="kpi"><div class="label">${t("kpi.engagement")}</div>
-      <div class="value">${pct(k.engagement)}${pill(change(k.engagement, prev.engagement, "points"), n)}</div>
+      <div class="value">${pct(k.engagement)}${pill(change(k.engagement, prev.engagement, "points"))}</div>
       <div class="delta">${t("kpi.eng.sub")}</div></div>
-    <div class="kpi"><div class="label">${t("kpi.ppw")}</div>
-      <div class="value">${num(k.posts_per_week)}${pill(change(k.posts_per_week, prev.posts_per_week), n)}</div>
-      <div class="delta">${t("kpi.ppw.sub")}</div></div>
+    ${postsTile}
   </section>`;
 }
 
 function platformPanel(pf, p) {
-  const k = p.kpis, prev = k.previous || {}, n = state.days;
+  const k = p.kpis, prev = k.previous || {};
   return `<section class="card platform ${esc(pf)}">
     <div class="head">${badge(pf)}<div><h2>${esc(PLATFORM[pf] || pf)}</h2>
       <div class="muted" style="font-size:12px">${p.accounts === 1 ? t("pf.account") : t("pf.accounts", { n: p.accounts })}</div></div></div>
@@ -801,13 +816,13 @@ function platformPanel(pf, p) {
       <div class="mini"><div class="l">${t("pf.followers")}</div><div class="v">${fmt(k.followers)}</div>
         <div class="d ${trend(k.growth)}">${signed(k.growth)}</div></div>
       <div class="mini"><div class="l">${t("pf.views")}</div><div class="v">${fmt(k.views)}</div>
-        <div class="d">${pill(change(k.views, prev.views), n)}</div></div>
+        <div class="d">${pill(change(k.views, prev.views))}</div></div>
       <div class="mini"><div class="l">${t("pf.median")}</div><div class="v">${fmt(k.median_views)}</div>
-        <div class="d">${pill(change(k.median_views, prev.median_views), n)}</div></div>
+        <div class="d">${pill(change(k.median_views, prev.median_views))}</div></div>
       <div class="mini"><div class="l">${t("pf.eng")}</div><div class="v">${pct(k.engagement)}</div>
-        <div class="d">${pill(change(k.engagement, prev.engagement, "points"), n)}</div></div>
+        <div class="d">${pill(change(k.engagement, prev.engagement, "points"))}</div></div>
     </div>
-    <p class="sub">${t("pf.chart")}</p>
+    <p class="sub">${t(hourly("pf.chart"))}</p>
     <div class="chart small"><canvas id="c-pf-${esc(pf)}"></canvas></div>
   </section>`;
 }
@@ -915,7 +930,7 @@ function channelCards(rows) {
   return `<div class="channels">${[...byGroup].map(([group, accs]) => `<div class="card channel-card">
       <h3>${esc(group)}</h3>
       <div class="total">${t("channels.total", { followers: fmt(accs.reduce((s, a) => s + (a.followers || 0), 0)),
-        views: fmt(accs.reduce((s, a) => s + (a.views || 0), 0)), n: state.days })}</div>
+        views: fmt(accs.reduce((s, a) => s + (a.views || 0), 0)), period: period() })}</div>
       ${accs.map(a => `<a class="acc-row" href="#/account/${encodeURIComponent(a.id)}">
         ${badge(a.platform, true)}
         <span class="who"><b>@${esc(a.handle)}</b><small>${esc(PLATFORM[a.platform] || a.platform)}</small></span>
@@ -928,21 +943,21 @@ function channelCards(rows) {
 async function pageOverview() {
   const d = await get("overview");
   if (!d.accounts.length) return emptyState();
-  const names = Object.keys(d.platforms), n = state.days;
+  const names = Object.keys(d.platforms);
   const rankOptions = RANK_KEYS.map(([k, key]) => `<option value="${k}">${t(key)}</option>`).join("");
   view.innerHTML = kpiTiles(d.kpis, d.series)
     + `<section class="row2">${names.map(pf => platformPanel(pf, d.platforms[pf])).join("")}</section>`
     + goalsCard(d.goals)
     + `<section class="row2">
-        <div class="card"><h2>${t("chart.followers")}</h2><p class="sub">${t("chart.followers.sub")}</p>
+        <div class="card"><h2>${t("chart.followers")}</h2><p class="sub">${t(hourly("chart.followers.sub"))}</p>
           ${names.length > 1 ? legend(names) : ""}<div class="chart"><canvas id="c-followers"></canvas></div></div>
-        <div class="card"><h2>${t("chart.views")}</h2><p class="sub">${t("chart.views.sub")}</p>
+        <div class="card"><h2>${t(hourly("chart.views"))}</h2><p class="sub">${t(hourly("chart.views.sub"))}</p>
           ${names.length > 1 ? legend(names) : ""}<div class="chart"><canvas id="c-views"></canvas></div></div>
       </section>`
     + `<section><h2 style="font-size:15px;margin:4px 0 2px">${t("channels.title")}</h2>
         <p class="muted" style="font-size:12px;margin:0 0 12px">${t("channels.sub")}</p>${channelCards(d.accounts)}</section>`
     + `<section class="card"><h2>${t("table.title")}</h2>
-        <div class="only-desktop"><p class="sub">${t("table.sub", { n })}</p><div id="acc-table">${accountsTable(d.accounts)}</div></div>
+        <div class="only-desktop"><p class="sub">${t("table.sub", { period: period() })}</p><div id="acc-table">${accountsTable(d.accounts)}</div></div>
         <div class="only-phone"><div class="toolbar" style="margin:8px 0 2px"><span class="muted" style="font-size:12px">${t("rank.sub")}</span>
             <select id="rank-key">${rankOptions}</select></div>
           <div id="rank-list">${ranking(d.accounts)}</div></div>
@@ -992,7 +1007,7 @@ async function pagePosts() {
       <select id="post-cat" aria-label="${t("col.category")}"><option value="">${t("posts.allCats")}</option>${options}</select>
       <div class="seg" id="post-sort"><button data-v="views">${t("posts.byViews")}</button><button data-v="shares">${t("posts.byShares")}</button></div>
       <a class="btn ghost" href="${exportUrl()}" download>${t("posts.export")}</a></div>
-    <p class="sub" style="margin-top:8px">${t("posts.sub", { n: d.posts.length, d: state.days })}</p>
+    <p class="sub" style="margin-top:8px">${t("posts.sub", { n: d.posts.length, period: period() })}</p>
     ${postsSection(d.posts)}</section>`;
   const cat = document.getElementById("post-cat");
   cat.value = state.postCategory;
@@ -1035,7 +1050,7 @@ async function pageInsights() {
   const d = await get("insights");
   view.innerHTML = `
     <section class="card"><h2>${t("ins.times")}</h2>
-      <p class="sub">${t("ins.times.sub", { d: state.days, n: d.posts })}${state.days < 90 ? t("ins.times.more") : ""}</p>
+      <p class="sub">${t("ins.times.sub", { period: period(), n: d.posts })}${state.days < 90 ? t("ins.times.more") : ""}</p>
       ${heatmap(d)}</section>
     <section class="card"><h2>${t("ins.cats")}</h2>
       <p class="sub">${t("ins.cats.sub")}</p>
@@ -1061,10 +1076,10 @@ async function pageAccount(id) {
       <span class="chip">${esc(a.group || "—")}</span>${typeChip}</div>
     ${kpiTiles(d.kpis, d.series)}
     <section class="row2">
-      <div class="card"><h2>${t("kpi.followers")}</h2><p class="sub">${t("chart.followers.sub")}</p><div class="chart"><canvas id="c-followers"></canvas></div></div>
-      <div class="card"><h2>${t("chart.views")}</h2><p class="sub">${t("pf.chart")}</p><div class="chart"><canvas id="c-views"></canvas></div></div>
+      <div class="card"><h2>${t("kpi.followers")}</h2><p class="sub">${t(hourly("chart.followers.sub"))}</p><div class="chart"><canvas id="c-followers"></canvas></div></div>
+      <div class="card"><h2>${t(hourly("chart.views"))}</h2><p class="sub">${t(hourly("pf.chart"))}</p><div class="chart"><canvas id="c-views"></canvas></div></div>
     </section>
-    <section class="card"><h2>${t("acc.posts")}</h2><p class="sub">${t("acc.posts.sub", { d: state.days })}</p>${postsSection(d.posts, false)}</section>`;
+    <section class="card"><h2>${t("acc.posts")}</h2><p class="sub">${t("acc.posts.sub", { period: period() })}</p>${postsSection(d.posts, false)}</section>`;
   const color = c[a.platform] || c.accent, name = PLATFORM[a.platform];
   lineChart(document.getElementById("c-followers"), d.series.labels, [{ label: name, color, values: d.series.followers }], tText("kpi.followers"), { fill: true });
   barChart(document.getElementById("c-views"), d.series.labels, [{ label: name, color, values: d.series.views }], tText("kpi.views"));
@@ -1432,7 +1447,9 @@ function applyStaticText() {
   document.documentElement.lang = state.lang;
   document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = dict[el.dataset.i18n] ?? ""; });
   document.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
-  document.querySelectorAll("#f-days button").forEach(b => { b.textContent = dict["filter.days"].replace("{n}", b.dataset.v); });
+  document.querySelectorAll("#f-days button").forEach(b => {
+    b.textContent = b.dataset.v === "1" ? dict["filter.24h"] : dict["filter.days"].replace("{n}", b.dataset.v);
+  });
   document.getElementById("lang").value = state.lang;
   document.getElementById("sync-now").setAttribute("aria-label", tText("sync.now"));
   document.getElementById("sheet-close").setAttribute("aria-label", tText("sheet.close"));

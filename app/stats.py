@@ -8,6 +8,7 @@ from zoneinfo import ZoneInfo
 TZ = ZoneInfo("Europe/Paris")
 WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 PLATFORM_ORDER = ["tiktok", "instagram"]
+NOW = None  # "now" can be fixed by tests: the audit compares the PC and the app at the very same instant
 # what TikTok asks before paying (Creator Rewards): followers, and video views over the last 30 days
 CREATOR_REWARDS = {"followers": 10_000, "views_30": 100_000}
 EXPORT_COLUMNS = ["date", "channel", "platform", "account", "title", "category", "views", "likes", "comments",
@@ -88,16 +89,29 @@ def _engagement(posts):
     return sum((p["likes"] or 0) + (p["comments"] or 0) + (p["shares"] or 0) for p in posts) / views
 
 
+def _now():
+    return NOW or datetime.now(timezone.utc)
+
+
 def _scope(con, days, platform, group, account_id=None):
-    """Everything a page needs: the period's posts, and the previous period's posts for comparison."""
-    today = datetime.now(TZ).date()
+    """Everything a page needs: the period's posts, and the previous period's posts for comparison.
+
+    days == 1 means the last 24 hours, rolling (not "since midnight"), compared with the 24 hours before."""
+    now = _now()
+    today = now.astimezone(TZ).date()
     accounts = _accounts(con, platform, group, account_id)
     ids = [a["id"] for a in accounts]
     first_day = today - timedelta(days=days - 1)
-    previous_first = first_day - timedelta(days=days)
-    all_posts = _posts(con, ids, datetime.combine(previous_first, time(0), TZ))
-    posts = [p for p in all_posts if p["local"].date() >= first_day]
-    previous = [p for p in all_posts if p["local"].date() < first_day]
+    if days == 1:
+        all_posts = _posts(con, ids, now - timedelta(hours=48))
+        cut = (now - timedelta(hours=24)).isoformat(timespec="seconds")  # published_at is UTC text: compares in order
+        posts = [p for p in all_posts if p["published_at"] >= cut]
+        previous = [p for p in all_posts if p["published_at"] < cut]
+    else:
+        previous_first = first_day - timedelta(days=days)
+        all_posts = _posts(con, ids, datetime.combine(previous_first, time(0), TZ))
+        posts = [p for p in all_posts if p["local"].date() >= first_day]
+        previous = [p for p in all_posts if p["local"].date() < first_day]
     return today, first_day, accounts, _history(con, ids), posts, previous
 
 
@@ -123,8 +137,20 @@ def _kpis(accounts, hist, posts, today, days, previous_posts=None):
     return k
 
 
-def _series(accounts, hist, posts, today, first_day):
-    """Total followers per day, and views of the posts published each day."""
+def _series(accounts, hist, posts, today, first_day, days):
+    """Total followers per day, and views of the posts published each day (each hour for the last 24 hours)."""
+    if days == 1:
+        start = (_now() - timedelta(hours=24)).replace(minute=0, second=0, microsecond=0)
+        hours = [start + timedelta(hours=i) for i in range(25)]  # from the hour of 24 h ago to the current hour
+        labels = [h.astimezone(TZ).strftime("%Y-%m-%dT%H") for h in hours]
+        views = defaultdict(int)
+        for p in posts:
+            views[p["local"].strftime("%Y-%m-%dT%H")] += p["views"] or 0
+        return {
+            "labels": labels,
+            "followers": [sum(_value_on(hist[a["id"]], h.astimezone(TZ).date()) or 0 for a in accounts) for h in hours],
+            "views": [views[label] for label in labels],
+        }
     day_list = [first_day + timedelta(days=i) for i in range((today - first_day).days + 1)]
     views = defaultdict(int)
     for p in posts:
@@ -203,9 +229,9 @@ def overview(con, days, platform, group):
         ps = [p for a in accs for p in by_account[a["id"]]]
         prev = [p for a in accs for p in prev_by_account[a["id"]]]
         platforms[name] = {"accounts": len(accs), "kpis": _kpis(accs, hist, ps, today, days, prev),
-                           "series": _series(accs, hist, ps, today, first_day)}
+                           "series": _series(accs, hist, ps, today, first_day, days)}
     return {"kpis": _kpis(accounts, hist, posts, today, days, previous),
-            "series": _series(accounts, hist, posts, today, first_day),
+            "series": _series(accounts, hist, posts, today, first_day, days),
             "platforms": platforms, "accounts": rows,
             "goals": {"targets": CREATOR_REWARDS, "accounts": _goals(con, accounts, hist, today)}}
 
@@ -243,7 +269,7 @@ def account(con, account_id, days):
                     "group": a["group_name"], "type": a["account_type"], "source": a["source"],
                     "growth_7": _growth(hist[a["id"]], today, 7), "growth_30": _growth(hist[a["id"]], today, 30)},
         "kpis": _kpis(accounts, hist, posts, today, days, previous),
-        "series": _series(accounts, hist, posts, today, first_day),
+        "series": _series(accounts, hist, posts, today, first_day, days),
         "categories": _categories(posts),
         "posts": [_public(p, by_id) for p in reversed(posts)],
     }
